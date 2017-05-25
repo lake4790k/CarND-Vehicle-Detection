@@ -8,6 +8,8 @@ from sklearn.svm import LinearSVC
 
 from Config import Config
 
+logging.info('%s initializing', __name__)
+
 
 class Train:
 

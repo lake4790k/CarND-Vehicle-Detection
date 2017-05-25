@@ -1,6 +1,8 @@
 from Common import *
 from Config import Config
 
+logging.info('%s initializing', __name__)
+
 
 class FindCars:
 
@@ -59,6 +61,7 @@ class FindCars:
                                     xpos:xpos + nblocks_per_window].ravel()
                     hog_feat3 = hogs[0][ypos:ypos + nblocks_per_window,
                                     xpos:xpos + nblocks_per_window].ravel()
+
                     hog_features = np.hstack((hog_feat1, hog_feat2, hog_feat3))
                 else:
                     hog_features = hogs[0][ypos:ypos + nblocks_per_window,

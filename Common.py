@@ -8,6 +8,10 @@ from matplotlib import image as mpimg
 import glob
 import logging
 import matplotlib.pyplot as plt
+from moviepy.editor import VideoFileClip
+
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', datefmt='%H:%M:%S', level=logging.INFO)
+logging.info('%s initializing', __name__)
 
 def bin_spatial(img, size=(32, 32)):
     features = cv2.resize(img, size).ravel()

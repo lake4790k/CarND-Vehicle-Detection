@@ -3,8 +3,7 @@ import logging
 from Config import Config
 from Train import Train
 
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', datefmt='%H:%M:%S', level=logging.INFO)
-logging.info('Vehicule detection initializing')
+logging.info('%s initializing', __name__)
 
 
 def main():
