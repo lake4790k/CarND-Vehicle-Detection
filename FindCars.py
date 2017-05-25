@@ -69,14 +69,13 @@ class FindCars:
 
                 if cfg.hog_feat:
                     if cfg.hog_channel == 'ALL':
-                        hog_feat1 = hogs[0][ypos:ypos + nblocks_per_window,
-                                        xpos:xpos + nblocks_per_window].ravel()
-                        hog_feat2 = hogs[0][ypos:ypos + nblocks_per_window,
-                                        xpos:xpos + nblocks_per_window].ravel()
-                        hog_feat3 = hogs[0][ypos:ypos + nblocks_per_window,
-                                        xpos:xpos + nblocks_per_window].ravel()
+                        hog_features = []
+                        for channel in range(len(hogs)):
+                            hog_feature_1 = hogs[channel][ypos:ypos + nblocks_per_window,
+                                                xpos:xpos + nblocks_per_window].ravel()
+                            hog_features.append(hog_feature_1)
 
-                        hog_features = np.hstack((hog_feat1, hog_feat2, hog_feat3))
+                        hog_features = np.hstack(hog_features)
                     else:
                         hog_features = hogs[0][ypos:ypos + nblocks_per_window,
                                                 xpos:xpos + nblocks_per_window].ravel()
