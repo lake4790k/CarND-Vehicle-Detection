@@ -104,5 +104,3 @@ class Train:
 
         with open('svc.pickle', 'wb') as f:
             pickle.dump({'svc': svc, 'scaler': X_scaler, 'cfg': self.cfg}, f)
-
-        return svc
