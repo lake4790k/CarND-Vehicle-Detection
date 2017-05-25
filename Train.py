@@ -95,7 +95,7 @@ class Train:
 
         logging.info('Feature vector length: %d', len(X_train[0]))
 
-        tuned_parameters = [{'C': [1, 10, 100, 1000]}]
+        tuned_parameters = [{'C': [.1, 1, 10, 100]}]
         model = LinearSVC(max_iter=10000, C=1)
         if self.grid:
             model = GridSearchCV(model, tuned_parameters, verbose=True, n_jobs=2)

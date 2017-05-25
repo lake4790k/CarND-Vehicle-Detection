@@ -13,9 +13,11 @@ from moviepy.editor import VideoFileClip
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', datefmt='%H:%M:%S', level=logging.INFO)
 logging.info('%s initializing', __name__)
 
+
 def bin_spatial(img, size=(32, 32)):
     features = cv2.resize(img, size).ravel()
     return features
+
 
 def load_svc():
     if os.path.isfile('svc.pickle'):
@@ -23,7 +25,6 @@ def load_svc():
             return pickle.load(f)
 
 
-# NEED TO CHANGE bins_range if reading .png files with mpimg!
 def color_hist(img, nbins=32, bins_range=(0, 256)):
     channel1_hist = np.histogram(img[:, :, 0], bins=nbins, range=bins_range)
     channel2_hist = np.histogram(img[:, :, 1], bins=nbins, range=bins_range)
