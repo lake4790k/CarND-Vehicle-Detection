@@ -5,6 +5,8 @@ import time
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
+from tqdm import tqdm
+from sklearn.model_selection import GridSearchCV
 
 from Config import Config
 
@@ -13,8 +15,11 @@ logging.info('%s initializing', __name__)
 
 class Train:
 
-    def __init__(self, cfg: Config):
+    def __init__(self, cfg: Config, small=True, sample_size=0, grid=False):
         self.cfg = cfg
+        self.small = small
+        self.sample_size = sample_size
+        self.grid = grid
 
     def img_features(self, img):
         features = []
@@ -47,42 +52,37 @@ class Train:
 
     def imgs_features(self, files):
         features = []
-        for file in files:
+        for file in tqdm(files):
             img = mpimg.imread(file)
+            if not self.small:
+                img *= 255
+                img = img.astype(np.uint8)
             features1 = self.img_features(img)
             features.append(features1)
 
         return features
 
-    def prepare_all_features(self, sample_size=0):
-        cars = []
-        images = glob.glob('vehicles_smallset/*/*.jpeg', recursive=True)
-        #images = glob.glob('vehicles/*/*.png', recursive=True)
-        for image in images:
-            cars.append(image)
-        notcars = []
-        images = glob.glob('non-vehicles_smallset/*/*.jpeg', recursive=True)
-        #images = glob.glob('non-vehicles/*/*.png', recursive=True)
-        for image in images:
-            notcars.append(image)
+    def prepare_all_features(self):
+        if self.small:
+            cars = glob.glob('vehicles_smallset/*/*.jpeg', recursive=True)
+            notcars = glob.glob('non-vehicles_smallset/*/*.jpeg', recursive=True)
+        else:
+            cars = glob.glob('vehicles/*/*.png', recursive=True)
+            notcars = glob.glob('non-vehicles/*/*.png', recursive=True)
 
-        if sample_size > 0:
-            cars = cars[0:sample_size]
-            notcars = notcars[0:sample_size]
+        if self.sample_size > 0:
+            cars = cars[0:self.sample_size]
+            notcars = notcars[0:self.sample_size]
 
         logging.info('#vehicules: %d #nonVehicules: %d', len(cars),  len(notcars))
-
         t = time.time()
-
         car_features = self.imgs_features(cars)
         noncar_features = self.imgs_features(notcars)
-
         logging.info('%.2f Seconds to prepare features', time.time() - t)
 
         return car_features, noncar_features
 
-    def train_svc(self):
-        car_features, notcar_features = self.prepare_all_features(sample_size=0)
+    def train(self, car_features, notcar_features):
         X = np.vstack((car_features, notcar_features)).astype(np.float64)
         X_scaler = StandardScaler().fit(X)
         scaled_X = X_scaler.transform(X)
@@ -95,12 +95,22 @@ class Train:
 
         logging.info('Feature vector length: %d', len(X_train[0]))
 
-        svc = LinearSVC()
-        t = time.time()
-        svc.fit(X_train, y_train)
+        tuned_parameters = [{'C': [1, 10, 100, 1000]}]
+        model = LinearSVC(max_iter=10000, C=1)
+        if self.grid:
+            model = GridSearchCV(model, tuned_parameters, verbose=True, n_jobs=2)
 
-        logging.info('%.2f Seconds to train SVC', time.time() - t)
-        logging.info('Test Accuracy of SVC = %.4f', svc.score(X_test, y_test))
+        t = time.time()
+        model.fit(X_train, y_train)
+        logging.info('%.2f Seconds to fit model', time.time() - t)
+        if self.grid:
+            logging.info('best params found %s', model.best_params_)
+        logging.info('Test Accuracy of SVC = %.2f', model.score(X_test, y_test))
 
         with open('svc.pickle', 'wb') as f:
-            pickle.dump({'svc': svc, 'scaler': X_scaler, 'cfg': self.cfg}, f)
+            pickle.dump({'svc': model, 'scaler': X_scaler, 'cfg': self.cfg}, f)
+
+    def train_svc(self):
+        car_features, notcar_features = self.prepare_all_features()
+        self.train(car_features, notcar_features)
+
