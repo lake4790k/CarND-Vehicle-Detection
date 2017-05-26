@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from skimage.feature import hog
-from Config import Config
+from FeaturesConfig import FeaturesConfig
 import os.path
 import pickle
 from matplotlib import image as mpimg
@@ -53,7 +53,7 @@ def get_hog_features(img, orient, pix_per_cell, cell_per_block,
         return features
 
 
-def convert_color(img, cfg: Config):
+def convert_color(img, cfg: FeaturesConfig):
     if cfg.color_space == 'HSV':
         return cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
     elif cfg.color_space == 'LUV':

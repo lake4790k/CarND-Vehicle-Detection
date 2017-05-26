@@ -8,14 +8,14 @@ from sklearn.svm import LinearSVC
 from tqdm import tqdm
 from sklearn.model_selection import GridSearchCV
 
-from Config import Config
+from FeaturesConfig import FeaturesConfig
 
 logging.info('%s initializing', __name__)
 
 
 class Train:
 
-    def __init__(self, cfg: Config, small=True, sample_size=0, grid=False):
+    def __init__(self, cfg: FeaturesConfig, small=True, sample_size=0, grid=False):
         self.cfg = cfg
         self.small = small
         self.sample_size = sample_size
