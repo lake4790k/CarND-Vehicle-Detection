@@ -11,10 +11,10 @@ class FeaturesConfig:
         self.hog_channel = 'ALL'  # Can be 0, 1, 2, or "ALL"
 
         self.spatial_feat = True  # Spatial features on or off
-        self.spatial_size = (16, 16)  # Spatial binning dimensions
+        self.spatial_size = (32, 32)  # Spatial binning dimensions
 
         self.hist_feat = True  # Histogram features on or off
-        self.hist_bins = 16  # Number of histogram bins
+        self.hist_bins = 32  # Number of histogram bins
 
-        self.y_start = 380
+        self.y_start = 400
         self.y_stop = 650
