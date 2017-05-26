@@ -140,8 +140,9 @@ I then use the `label()` function to create the final bounding boxes over the he
 
 There was a lot of image processing functionality to integrate in this project and a lot of attention was needed at the details. For example in the beginning when I put together the pipeline the training seemed succesful, but the car finding logic found cars all over the place. It turned out I concatenated the hog/spatial/histogram features in different order during the training and processing, but since the dimensions matched, there was no error, just poor results.
 
-There are a lot parameters in the pipeline that could be tuned to improve performance. The biggest challange was finding a good stabilizing algorithm to filter out false cars, but not the real ones. A lo t of experemintation was needed to find a decay rate, frame lookback and threshold to achieve a stable looking result.
+There are a lot parameters in the pipeline that could be tuned to improve performance. The biggest challange was finding a good stabilizing algorithm to filter out false cars, but not the real ones. A lot of experemintation was needed to find a decay rate, frame lookback and threshold to achieve a stable looking result. Still I would have liked to have more responsive tracking of the car movement, but being a bit slow in accepting new observations was the price to pay to filter out the transient false cars. Surely having a more reliable car classifier (ie. convnet) in the first place would have helped.
 
 Since the result could only be manually checked and video processing was slow I could not explore too much of the parameter space, there could be much better combinations of the features/stabilizing parameters.
 
 And even if I found even better parameters, these would perform better on this 1 minute recording, but on a different road with different cars under different lighting conditions they may not perform at all. The robustness needs to be tested with many different recordings.
+
