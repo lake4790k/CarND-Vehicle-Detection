@@ -110,6 +110,8 @@ Here's a [link to my video result](./processed_video.mp4)
 
 I implemented this logic in `StableCars`. Here I store the bounding boxes from the last N frames. On every frame I add all the boxes from the N last frames to the heatmap, but the older frames are added with an exponential decay (`alpha`), eg. the current bounding boxes have weight 1, the previous frame 0.9, before that 0.81, etc. I then apply the thresholding over this heatmap that is built from the last N frames.
 
+This way the exponential decaying is tracking the real hot spots in time, the location information is not lost from frame to frame.
+
 The processing is run from `Main` notebook, these were the parameters I used for the video:
 
 
@@ -135,5 +137,10 @@ I then use the `label()` function to create the final bounding boxes over the he
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+There was a lot of image processing functionality to integrate in this project and a lot of attention was needed at the details. For example in the beginning when I put together the pipeline the training seemed succesful, but the car finding logic found cars all over the place. It turned out I concatenated the hog/spatial/histogram features in different order during the training and processing, but since the dimensions matched, there was no error, just poor results.
 
+There are a lot parameters in the pipeline that could be tuned to improve performance. The biggest challange was finding a good stabilizing algorithm to filter out false cars, but not the real ones. A lo t of experemintation was needed to find a decay rate, frame lookback and threshold to achieve a stable looking result.
+
+Since the result could only be manually checked and video processing was slow I could not explore too much of the parameter space, there could be much better combinations of the features/stabilizing parameters.
+
+And even if I found even better parameters, these would perform better on this 1 minute recording, but on a different road with different cars under different lighting conditions they may not perform at all. The robustness needs to be tested with many different recordings.
