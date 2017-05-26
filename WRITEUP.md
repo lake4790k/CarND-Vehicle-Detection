@@ -10,6 +10,9 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
+[hsv]: ./output_images/hsv.png
+[hog_car]: ./output_images/hog_car.png
+[hog_nocar]: ./output_images/hog_nocar.png
 [image1]: ./output_images/windows.png
 [image2]: ./output_images/heatmaps.png
 [image3]: ./output_images/stable.png
@@ -56,6 +59,17 @@ class FeaturesConfig:
         self.y_stop = 650
 ```
 
+This is the HSV color transform:
+
+![alt text][hsv]
+
+This how the non car hogs look like:
+
+![alt text][hog_nocar]
+
+This how the car hogs look like:
+
+![alt text][hog_car]
 
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
@@ -94,7 +108,17 @@ Here's a [link to my video result](./processed_video.mp4)
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 
-I implemented this logic in `StableCars`. Here I store the bounding boxes from the last N frames. On every frame I add all the boxes from the N last frames to the heatmap, but the older frames are added with an exponential decay, eg. the current bounding boxes have weight 1, the previous frame 0.9, before that 0.81, etc. I then apply the thresholding over this heatmap that is built from the last N frames.
+I implemented this logic in `StableCars`. Here I store the bounding boxes from the last N frames. On every frame I add all the boxes from the N last frames to the heatmap, but the older frames are added with an exponential decay (`alpha`), eg. the current bounding boxes have weight 1, the previous frame 0.9, before that 0.81, etc. I then apply the thresholding over this heatmap that is built from the last N frames.
+
+The processing is run from `Main` notebook, these were the parameters I used for the video:
+
+
+```python
+find = FindCars(svc['cfg'], svc['svc'], svc['scaler'], scales=[1.25])
+stable = StableCars(find, threshold=20, last_n=10, alpha=0.9)
+clip = VideoFileClip("project_video.mp4")
+processed = clip.fl_image(stable.stablize)
+```
 
 This is how this looks like for 15 frames:
 
