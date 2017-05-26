@@ -71,6 +71,7 @@ This how the car hogs look like:
 
 ![alt text][hog_car]
 
+The car features seem to have a lot more orderly structure.
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
@@ -87,7 +88,7 @@ I could get high accuracies, close to 100%, but this was most likely the result 
 
 In `FindCars` I used the method that did the HOG processing only once for the whole image and then scanned through the whole HOG features with the window. I left the overlap set at `cells_per_step = 2` which created a lot of overlapping hits for actual cars which is good for a strong signal at the heatmap stage.
 
-The code supports multiple scales for the window size, but in the end I used only one scale: 1.25, because the results looked good on the test images, actual cars had lots of window hits and non cars not that much.
+The code supports multiple scales for the window size, but in the end I used only one scale: 1.25, because the results looked good on the test images, actual cars had lots of window hits and non cars not that much. Also as the window size decrased the processing got much slower which was not acceptable for the extensice manual experimentation.
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
