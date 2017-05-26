@@ -6,7 +6,7 @@ logging.info('%s initializing', __name__)
 
 class FindCars:
 
-    def __init__(self, cfg: Config, svc, X_scaler, scales=(1)):
+    def __init__(self, cfg: Config, svc, X_scaler, scales=(1, 2)):
         self.cfg = cfg
         self.svc = svc
         self.X_scaler = X_scaler

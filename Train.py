@@ -95,17 +95,18 @@ class Train:
 
         logging.info('Feature vector length: %d', len(X_train[0]))
 
-        tuned_parameters = [{'C': [.1, 1, 10, 100]}]
         model = LinearSVC(max_iter=10000, C=1)
         if self.grid:
+            tuned_parameters = [{'C': [.1, 1, 10, 100]}]
             model = GridSearchCV(model, tuned_parameters, verbose=True, n_jobs=2)
 
         t = time.time()
         model.fit(X_train, y_train)
+
         logging.info('%.2f Seconds to fit model', time.time() - t)
+        logging.info('Test Accuracy of SVC = %.2f', model.score(X_test, y_test))
         if self.grid:
             logging.info('best params found %s', model.best_params_)
-        logging.info('Test Accuracy of SVC = %.2f', model.score(X_test, y_test))
 
         with open('svc.pickle', 'wb') as f:
             pickle.dump({'svc': model, 'scaler': X_scaler, 'cfg': self.cfg}, f)
